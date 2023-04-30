@@ -1,0 +1,8 @@
+.vscode/
+
+#Rust/Cargo
+*debug/
+*target/
+*Cargo.lock
+**/*.rs.bk
+*.pdb

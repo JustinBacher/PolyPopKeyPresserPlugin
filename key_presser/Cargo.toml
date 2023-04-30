@@ -1,0 +1,12 @@
+[package]
+name = "key_presser"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+enigo = "0.1.2"
+
+[profile.release]
+codegen-units = 1
+panic = "abort"
+

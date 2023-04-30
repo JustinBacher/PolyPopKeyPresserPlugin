@@ -1,0 +1,9 @@
+{
+    "name": "Key Presser",
+    "author": "Jab",
+    "description": "Simulate key-press events, including mouse events.",
+    "category": "Utilities",
+    "url": "https://www.polypoplive.com",
+    "version": "1.0",
+    "min_app_version": "1.0"
+}
