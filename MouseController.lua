@@ -1,7 +1,7 @@
-local keyPresser = getLocalFolder() .. "key_presser/target/release/key_presser.exe"
+local keyPresser = getLocalFolder() .. "key_presser/target/release/mouse_controller.exe"
 
 Instance.properties = properties({
-	{ name="Actions", type="ObjectSet", set_types={type="PolyPopObject", index="KeyPresser.KeyAction"} },
+	{ name="Actions", type="ObjectSet", set_types={type="PolyPopObject", index="KeyPresser.MouseAction"} },
 	{ name="Trigger", type="Action" }
 })
 

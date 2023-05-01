@@ -5,3 +5,7 @@ Instance.properties = properties({
 function Instance:onInit()
 
 end
+
+function Instance:getAction()
+	return self.properties.Action
+end
