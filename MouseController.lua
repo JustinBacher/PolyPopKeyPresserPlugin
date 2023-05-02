@@ -32,9 +32,27 @@ Instance.properties = properties({
 function Instance:Scroll()
 	local direction = self.properties.Scroll.Direction
 	local units = self.properties.Scroll.Amount
+
 	getOS():run(
 		"Mouse Scrolled " .. direction .. " " .. units .. " units",
-		mouseController .. direction
+		' "' .. mouseController .. '" "' .. direction .. '" "' .. units .. '"'
 	)
 end
 
+function Instance:moveMouse()
+	local x, y = self.properties.Move.X, self.properties.Move.Y
+	local relative = self.properties.Move.Relative
+	local relativeText = "."
+
+	if relative then relativeText = " relative to current position." end
+
+
+	getOS():run(
+		"Mouse Moved [" .. x .. ", " .. y .. "]" .. relativeText,
+		' "' .. mouseController .. '" "' .. x .. '" "' .. y .. '" "' .. tostring(relative) .. '"'
+	)
+end
+
+function Instance:Click()
+	-- TODO: 
+end
