@@ -1,3 +1,3 @@
 <stringtable>
-  <ID name="Self_ToolTip">Simulate key-press events, including mouse events.</ID>
+  <ID name="Self_ToolTip">Simulate controller/gamepad events.</ID>
 </stringtable>

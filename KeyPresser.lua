@@ -1,7 +1,7 @@
 local keyPresser = getLocalFolder() .. "key_presser/target/release/key_presser.exe"
 
 Instance.properties = properties({
-	{ name="Actions", type="ObjectSet", set_types={type="PolyPopObject", index="KeyPresser.Action"} },
+	{ name="Actions", type="ObjectSet", set_types={type="PolyPopObject", index="KeyPresser.KeyAction"} },
 	{ name="Trigger", type="Action" }
 })
 
