@@ -1,3 +1,13 @@
 <stringtable>
-  <ID name="Self_ToolTip">Simulate key-press events, including mouse events.</ID>
+  <ID name="Self_ToolTip">Simulate mouse events</ID>
+  <ID name="Click_Button_ToolTip">Which mouse button to press. (Back and Forward correspond to Mouse buttons 4 and 5 which typically performs the same function as Browser Back and Browser Forward)</ID>
+  <ID name="Click_Duration_ToolTip">How long to hold the mouse button down for.</ID>
+  <ID name="Click_Click_ToolTip">Clicks the specified mouse button for the duration specified</ID>
+  <ID name="Move_X_ToolTip">If Relative is checked then moves the mouse to the left (negative) or right (positive). If relative is un-checked then moves the mouse left or right based on the top left corner of the main monitor.</ID>
+  <ID name="Move_Y_ToolTip">If Relative is checked then moves the mouse to the up (positive) or down (negative). If relative is un-checked then moves the mouse up or down based on the top left corner of the main monitor.</ID>
+  <ID name="Move_Relative_ToolTip">If checked this action moves the mouse relative to it's current position. If unchecked it will move the mouse to the given pixels away from the main monitors top left corner.</ID>
+  <ID name="Move_MoveMouse_ToolTip">Move the mouse cursor based on the X, Y and Relative properties.</ID>
+  <ID name="Scroll_Direction_ToolTip">The direction to scroll in.</ID>
+  <ID name="Scroll_Amount_ToolTip">. Translates to lines defined by the operating system and is essentially one 15° (click) rotation on the mouse wheel. How many lines it moves depends on the current setting in the operating system.</ID>
+  <ID name="Scroll_Scroll_ToolTip">Simulates a mouse scroll event using the Direction and amount specified.</ID>
 </stringtable>
