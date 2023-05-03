@@ -1,5 +1,5 @@
 Instance.properties = properties({
-	{ name="Action", type="Enum", items={
+	{ name="Modifier", type="Enum", items={
 		"Meta",
 		"Alt",
 		"Control",
@@ -11,10 +11,14 @@ Instance.properties = properties({
 	}, onUpdate="onActionUpdate" }
 })
 
+function Instance:onInit()
+	getUI():setUIProperty({{obj=self, expand=true}})
+end
+
 function Instance:getAction()
-	return self.properties.Action
+	return self.properties.Modifier
 end
 
 function Instance:onActionUpdate()
-	self:setName(self.properties.Action)
+	self:setName(self.properties.Modifier)
 end

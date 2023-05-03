@@ -1,3 +1,4 @@
 <stringtable>
   <ID name="Self_ToolTip">Simulate key-press events.</ID>
+  <ID name="Action_Tooltip">The key to press for this action. Combining multiple keys presses them all at once</ID>
 </stringtable>
