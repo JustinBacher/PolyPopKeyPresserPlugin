@@ -1,5 +1,5 @@
-use enigo::{Enigo, MouseControllable, KeyboardControllable, Key, MouseButton};
-use std::{thread::sleep, str::Split, time::Duration, env};
+use enigo::{Enigo, KeyboardControllable, Key};
+use std::{thread::sleep,  time::Duration, env};
 
 fn determine_key(action: &String) -> Key {
     let ret_val: Key = match action.as_str() {
@@ -83,40 +83,19 @@ fn determine_key(action: &String) -> Key {
     ret_val
 }
 
-fn determine_click(action: &String) -> Option<MouseButton> {
-    let ret_val= match action.as_str() {
-        "Left" => MouseButton::Left,
-        "Right" => MouseButton::Right,
-        "" => MouseButton::Middle,
-        &_ => todo!(),
-    };
-
-    Some(ret_val)
-}
-
 fn main() {
     let mut enigo: Enigo = Enigo::new();
     let mut args: std::iter::Skip<env::Args> = env::args().skip(1);
-    let _info: String = args.next().unwrap();
-    let mut _info_split: Split<&str> = _info.split("-");
-    let action_type: &str = _info_split.next().unwrap();
-    let duration: u64 = _info_split.next().unwrap().parse::<u64>().unwrap();
+    let duration: u64 = args.next().unwrap().parse::<u64>().unwrap();
 
-    if action_type == "key" {
-        for action in  args {
-            enigo.key_down(determine_key(&action));
-        }
-        
-        sleep(Duration::from_secs(duration));
-        
-        for action in env::args().skip(2) {
-            enigo.key_up(determine_key(&action));
-        }
+    for action in args {
+        enigo.key_down(determine_key(&action));
     }
-    else if action_type == "mouse" {
-        let button: MouseButton = determine_click(&args.next().unwrap()).unwrap();
-        enigo.mouse_down(button);
-        sleep(Duration::from_secs(duration));
-        enigo.mouse_up(button);
+    
+    sleep(Duration::from_secs(duration));
+    
+    for action in env::args().skip(2) {
+        dbg!(&action);
+        enigo.key_up(determine_key(&action));
     }
 }
