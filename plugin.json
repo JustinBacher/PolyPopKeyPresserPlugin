@@ -1,9 +1,9 @@
 {
     "name": "Key Presser",
     "author": "Jab",
-    "description": "Simulate key-press events, including mouse events.",
+    "description": "Simulate key-press events, including mouse or gamepad events.",
     "category": "Utilities",
-    "url": "https://www.polypoplive.com",
+    "url": "https://github.dev/JustinBacher/PolyPopKeyPresserPlugin",
     "version": "1.0",
     "min_app_version": "1.0"
 }
