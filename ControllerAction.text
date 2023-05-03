@@ -1,4 +1,4 @@
 <stringtable>
   <ID name="Self_ToolTip">Simulate controller/gamepad events.</ID>
-  <ID name="Action_ToolTip">The controller button to press.</ID>
+  <ID name="Button_ToolTip">The controller button thumbstick direction to press.</ID>
 </stringtable>
