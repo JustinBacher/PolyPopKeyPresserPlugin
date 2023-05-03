@@ -25,9 +25,13 @@ Instance.properties = properties({
 		"Right Thumbstick Left",
 		"Right Thumbstick Right",
 		"Right Thumbstick Up",
-	} }
+	}, onUpdate="onActionUpdate" }
 })
 
 function Instance:getAction()
 	return "GamePad" .. self.properties.Action:gsub("%s+", "")
+end
+
+function Instance:onActionUpdate()
+	self:setName(self.properties.Action)
 end

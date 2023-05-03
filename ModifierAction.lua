@@ -8,9 +8,13 @@ Instance.properties = properties({
 		"Shift",
 		"LShift",
 		"RShift",
-	} }
+	}, onUpdate="onActionUpdate" }
 })
 
 function Instance:getAction()
 	return self.properties.Action
+end
+
+function Instance:onActionUpdate()
+	self:setName(self.properties.Action)
 end
