@@ -28,6 +28,10 @@ Instance.properties = properties({
 	}, onUpdate="onActionUpdate" }
 })
 
+function Instance:onInit()
+	getUI():setUIProperty({{obj=self, expand=true}})
+end
+
 function Instance:getAction()
 	return "GamePad" .. self.properties.Button:gsub("%s+", "")
 end
