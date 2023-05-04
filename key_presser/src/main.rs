@@ -86,16 +86,18 @@ fn determine_key(action: &String) -> Key {
 fn main() {
     let mut enigo: Enigo = Enigo::new();
     let mut args: std::iter::Skip<env::Args> = env::args().skip(1);
-    let duration: u64 = args.next().unwrap().parse::<u64>().unwrap();
+    let duration: u64 = args.next().unwrap().parse::<u64>().unwrap_or(0);
+    let mut keys: Vec<Key> = Vec::new();
 
     for action in args {
-        enigo.key_down(determine_key(&action));
+        let key: Key = determine_key(&action);
+        keys.push(key);
+        enigo.key_down(key);
     }
     
     sleep(Duration::from_secs(duration));
     
-    for action in env::args().skip(2) {
-        dbg!(&action);
-        enigo.key_up(determine_key(&action));
+    for key in &keys {
+        enigo.key_up(*key);
     }
 }
