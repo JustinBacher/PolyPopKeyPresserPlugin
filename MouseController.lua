@@ -1,4 +1,4 @@
-local mouseController = getLocalFolder() .. "mouse_controller/target/release/mouse_controller.exe "
+local mouseController = getLocalFolder() .. "mouse_controller.exe "
 
 Instance.properties = properties({
 	{ name="Click", type="PropertyGroup", items={

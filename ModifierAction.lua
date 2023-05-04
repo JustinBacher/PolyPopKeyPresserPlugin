@@ -1,5 +1,6 @@
 Instance.properties = properties({
 	{ name="Modifier", type="Enum", items={
+		"None",
 		"Meta",
 		"Alt",
 		"Control",
