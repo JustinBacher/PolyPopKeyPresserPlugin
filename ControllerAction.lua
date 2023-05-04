@@ -1,5 +1,5 @@
 Instance.properties = properties({
-	{ name="Action", type="Enum", items={
+	{ name="Button", type="Enum", items={
 		"None",
 		"A",
 		"B",
@@ -29,9 +29,9 @@ Instance.properties = properties({
 })
 
 function Instance:getAction()
-	return "GamePad" .. self.properties.Action:gsub("%s+", "")
+	return "GamePad" .. self.properties.Button:gsub("%s+", "")
 end
 
 function Instance:onActionUpdate()
-	self:setName(self.properties.Action)
+	self:setName(self.properties.Button)
 end
