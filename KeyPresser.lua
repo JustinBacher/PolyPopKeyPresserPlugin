@@ -21,12 +21,14 @@ function Instance:Press()
 			actions = actions .. ' "' .. action .. '"'
 		end
 	end
-
-	if actions then
+	print(keyPresser .. '"' .. duration .. '"' .. actions)
+	if actions ~= "" then
 		getOS():run(
 			"Key(s) Pressed: [" .. actions .. "] for " .. duration .. "(s)",
 			keyPresser .. '"' .. duration .. '"' .. actions
 		)
 	end
 end
+
+
 
