@@ -1,24 +1,38 @@
-use std::{thread::sleep,  time::Duration, env, net::TcpListener, thread::spawn};
-
-use enigo::{Enigo, KeyboardControllable, Key};
-use serde::{Deserialize, Serialize};
-use serde_json::Result;
-use tungstenite::{
-    accept_hdr,
-    handshake::server::{Request, Response},
+use std::{
+    env,
+    net::TcpListener,
+    thread::sleep,
+    thread::spawn,
+    time::{Duration, Instant},
 };
 
+use enigo::{Enigo, KeyboardControllable, Key, MouseControllable, MouseButton};
+use serde::Deserialize;
+use serde_repr::Deserialize_repr;
+use tungstenite::accept;
+
+#[derive(Deserialize, Debug)]
 struct Point {
     x: f64,
     y: f64,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize_repr, PartialEq, Debug)]
+#[repr(u8)]
+enum Kind {
+    Press = 0,
+    Cick = 1,
+    Move = 2,
+    Scroll = 3,
+}
+
+#[derive(Debug, Deserialize)]
 struct Event {
-    kind: u8,
+    kind: Kind,
     duration: u64,
-    actions: Option<Vec<&'a str>>,
+    actions: Option<Vec<String>>,
     relative: Option<bool>,
+    #[serde(flatten)]
     point: Option<Point>,
 }
 
@@ -104,8 +118,8 @@ fn determine_key(action: &String) -> Key {
     ret_val
 }
 
-fn click_mouse(enigo: &mut Enigo, event: Event) {
-    let button = match event.actions.unwrap().first() {
+fn click_mouse(enigo: &mut Enigo, event: &Event) {
+    let button = match event.actions.as_ref().unwrap().first().unwrap().as_str() {
         "Left" => MouseButton::Left,
         "Right" => MouseButton::Right,
         "Middle" => MouseButton::Middle,
@@ -121,7 +135,7 @@ fn click_mouse(enigo: &mut Enigo, event: Event) {
 }
 
 #[allow(unused_assignments)]
-fn move_mouse(enigo: &mut Enigo, event: Event) {
+fn move_mouse(enigo: &mut Enigo, event: &Event) {
     /* 
         Used solution from
         - https://stackoverflow.com/questions/5902751/simulate-mouse-cursor-move-in-c-sharp-between-two-coordinates
@@ -129,18 +143,19 @@ fn move_mouse(enigo: &mut Enigo, event: Event) {
         
         My version is probably clunky compared to the C# but it works
     */
-    let mut end_x: f64 = event.point.x?;
-    let mut end_y: f64 = event.point.y?;
+    let mut end_x: f64 = event.point.as_ref().unwrap().x;
+    let mut end_y: f64 = event.point.as_ref().unwrap().y;
+    let duration: Duration = Duration::from_millis(event.duration);
     let _current_position: (i32, i32) = enigo.mouse_location();
     let start_x: f64 = _current_position.0 as f64;
     let start_y: f64 = _current_position.1 as f64;
 
-    if event.relative? {
+    if event.relative.unwrap() {
         end_x += start_x;
         end_y += start_y;
     }
 
-    if event.duration.is_zero() {
+    if duration.is_zero() {
         return enigo.mouse_move_to(end_x as i32, end_y as i32);
     }
 
@@ -150,7 +165,7 @@ fn move_mouse(enigo: &mut Enigo, event: Event) {
     let mut time_fraction: f64 = 0.0 as f64;
 
     loop {
-        time_fraction = f64::min(1.0, stopwatch.elapsed().as_millis() as f64 / event.duration.as_millis() as f64);
+        time_fraction = f64::min(1.0, stopwatch.elapsed().as_millis() as f64 / duration.as_millis() as f64);
 
         enigo.mouse_move_to(
             (start_x + time_fraction * delta_x) as i32,
@@ -164,9 +179,9 @@ fn move_mouse(enigo: &mut Enigo, event: Event) {
 }
 
 fn scroll_mouse(enigo: &mut Enigo, event: &Event) {
-    let amount = i32::from(event.duration?);
+    let amount: i32 = event.duration as i32;
     
-    match event.actions.unwrap().first() {
+    match event.actions.as_ref().unwrap().first().unwrap().as_str() {
         "Up" => enigo.mouse_scroll_y(-amount),
         "Down" => enigo.mouse_scroll_y(amount),
         "Left" => enigo.mouse_scroll_x(-amount),
@@ -175,10 +190,10 @@ fn scroll_mouse(enigo: &mut Enigo, event: &Event) {
     };
 }
 
-fn pushKeys(enigo: &mut Enigo, event: &Event) {
+fn push_keys(enigo: &mut Enigo, event: &Event) {
     let mut keys: Vec<Key> = Vec::new();
 
-    for action in event.actions? {
+    for action in event.actions.as_ref().unwrap() {
         let key: Key = determine_key(&action);
         keys.push(key);
         enigo.key_down(key);
@@ -192,30 +207,28 @@ fn pushKeys(enigo: &mut Enigo, event: &Event) {
 }
 
 fn main() {
-    env_logger::init();
-    let mut enigo: Enigo = Enigo::new();
     let mut args: std::iter::Skip<env::Args> = env::args().skip(1);
     let host: String = args.next().unwrap();
     let server = TcpListener::bind(host).unwrap();
     
     for stream in server.incoming() {
         spawn (move || {
+            let mut enigo: Enigo = Enigo::new();
             let mut websocket = accept(stream.unwrap()).unwrap();
             loop {
-                let msg = websocket.read().unwrap();
+                let msg = websocket.read_message().unwrap();
 
                 // We do not want to send back ping/pong messages.
                 if msg.is_text() {
-                    let event: Event = serde_json::from_str(msg.into_text().unwrap())?;
+                    let event: Event = serde_json::from_str(msg.clone().into_text().unwrap().as_str()).unwrap();
                     
                     match event.kind {
-                        0 => pushKeys(&mut enigo, event),
-                        1 => click_mouse(&mut enigo, event),
-                        2 => move_mouse(&mut enigo, event),
-                        3 => scroll_mouse(&mut enigo, event),
-                        &_ => exit(1),
+                        Kind::Press => push_keys(&mut enigo, &event),
+                        Kind::Cick => click_mouse(&mut enigo, &event),
+                        Kind::Move => move_mouse(&mut enigo, &event),
+                        Kind::Scroll => scroll_mouse(&mut enigo, &event)
                     }
-                    websocket.send(msg).unwrap();
+                    websocket.write_message(msg).unwrap();
                 }
             }
         });
